@@ -60,7 +60,7 @@ class VideoPlayerViewModel {
         event.playerState == PlayerState.playing) {
       //Starts playing
       final timestamp = await ref.read(frameTimestampProvider.future);
-      print('==> playing $timestamp');
+      // print('==> playing $timestamp');
 
       // If the current time is greater than or equal to the timestamp, don't do anything
       if (await _controller.currentTime >= timestamp!) {
@@ -71,8 +71,10 @@ class VideoPlayerViewModel {
         // If the current time is greater than the timestamp, pause the video
         if (await _controller.currentTime >= timestamp) {
           _controller.pauseVideo();
+          _controller.seekTo(seconds: timestamp, allowSeekAhead: true);
+          timer.cancel();
         }
-        print('==> ${await _controller.currentTime} $timestamp');
+        // print('==> ${await _controller.currentTime} $timestamp');
       });
     } else if (lastState == PlayerState.playing &&
         (event.playerState == PlayerState.paused ||
