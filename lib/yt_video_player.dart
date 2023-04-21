@@ -25,6 +25,9 @@ class _YTVideoPlayerState extends ConsumerState<YTVideoPlayer> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      widget.controller
+        ..pauseVideo()
+        ..playVideo();
       vm = ref.read(VideoPlayerViewModel.provider)
         ..controller = widget.controller;
     });
@@ -32,6 +35,7 @@ class _YTVideoPlayerState extends ConsumerState<YTVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    vm = ref.watch(VideoPlayerViewModel.provider);
     return YoutubePlayerScaffold(
       controller: widget.controller,
       aspectRatio: 16 / 9,

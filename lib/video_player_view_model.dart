@@ -22,7 +22,7 @@ class VideoPlayerViewModel {
   VideoPlayerViewModel({required this.ref});
 
   // Provider
-  static final provider = Provider<VideoPlayerViewModel>((ref) {
+  static final provider = Provider.autoDispose<VideoPlayerViewModel>((ref) {
     final viewModel = VideoPlayerViewModel(ref: ref);
 
     ref.onDispose(() {
@@ -40,59 +40,83 @@ class VideoPlayerViewModel {
     _controller = controller;
     lastControllerState = PlayerState.paused;
 
-    _controller.listen(_controllerListener);
+    _controllerSubscription =
+        _controller.listen((event) async => await _controllerListener(event));
+    _videoStateSubscription =
+        _controller.videoStateStream.listen((event) async {
+      videoStateSubscriptionActive = true;
+      await _videoStateListener(event);
+    });
   }
 
   // Private variables
   late YoutubePlayerController _controller;
-  late Timer? _timer;
+  StreamSubscription<YoutubeVideoState>? _videoStateSubscription;
+  Timer? videoStateEnsureTimer;
+  bool videoStateSubscriptionActive = false;
+  StreamSubscription<YoutubePlayerValue>? _controllerSubscription;
+  bool shouldPause = true;
   final Ref ref;
 
   PlayerState? lastControllerState;
 
   // Private methods
-  void _controllerListener(YoutubePlayerValue event) async {
+  Future<void> _controllerListener(YoutubePlayerValue event) async {
     final lastState = lastControllerState;
 
     if ((lastState == PlayerState.paused ||
             lastState == PlayerState.unknown ||
-            lastState == PlayerState.buffering) &&
-        event.playerState == PlayerState.playing) {
+            lastState == PlayerState.unStarted ||
+            lastState == PlayerState.ended) &&
+        (event.playerState == PlayerState.playing ||
+            event.playerState == PlayerState.buffering)) {
       //Starts playing
       final timestamp = await ref.read(frameTimestampProvider.future);
-      // print('==> playing $timestamp');
 
       // If the current time is greater than or equal to the timestamp, don't do anything
-      if (await _controller.currentTime >= timestamp!) {
-        return;
-      }
-
-      _timer = Timer.periodic(const Duration(milliseconds: 33), (timer) async {
-        // If the current time is greater than the timestamp, pause the video
-        if (await _controller.currentTime >= timestamp) {
-          _controller.pauseVideo();
-          _controller.seekTo(seconds: timestamp, allowSeekAhead: true);
-          timer.cancel();
+      final currentTime = await _controller.currentTime;
+      if (currentTime >= timestamp!) {
+        if (lastState != PlayerState.unStarted) {
+          // If the video is unstarted, current time is 300. This causes a bug and the should pause turns to false
+          shouldPause = false;
         }
-        // print('==> ${await _controller.currentTime} $timestamp');
-      });
-    } else if (lastState == PlayerState.playing &&
-        (event.playerState == PlayerState.paused ||
-            event.playerState == PlayerState.unknown ||
-            event.playerState == PlayerState.buffering)) {
-      // Paused
-      _timer?.cancel();
-      _timer = null;
+      } else {
+        shouldPause = true;
+        videoStateEnsureTimer =
+            Timer.periodic(const Duration(seconds: 1), (timer) {
+          if (!videoStateSubscriptionActive) {
+            print('restarting service');
+            _videoStateSubscription?.cancel();
+            _videoStateSubscription =
+                _controller.videoStateStream.listen((event) async {
+              // print('==> listening');
+              videoStateSubscriptionActive = true;
+              _videoStateListener(event);
+              timer.cancel();
+            });
+          }
+        });
+      }
     }
 
     // Update the last controller state
     lastControllerState = event.playerState;
   }
 
+  Future<void> _videoStateListener(YoutubeVideoState event) async {
+    final timestamp = await ref.read(frameTimestampProvider.future);
+
+    if (shouldPause && event.position.inMilliseconds >= (timestamp! * 1000)) {
+      pause();
+      _controller.seekTo(seconds: timestamp, allowSeekAhead: true);
+      shouldPause = false;
+    }
+  }
+
   // Public methods
   void dispose() {
-    _timer?.cancel();
-    _timer = null;
+    _controllerSubscription?.cancel();
+    _videoStateSubscription?.cancel();
   }
 
   void play() {

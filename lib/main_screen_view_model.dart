@@ -25,7 +25,8 @@ class MainScreenViewModel extends StateNotifier<MainScreenStates> {
 
   // View Model Provider
   static final provider =
-      StateNotifierProvider<MainScreenViewModel, MainScreenStates>((ref) {
+      StateNotifierProvider.autoDispose<MainScreenViewModel, MainScreenStates>(
+          (ref) {
     return MainScreenViewModel(ref: ref);
   });
 
@@ -66,7 +67,7 @@ class MainScreenViewModel extends StateNotifier<MainScreenStates> {
 }
 
 // FrameID stateProvider
-final frameIdProvider = StateProvider<FrameID?>((ref) => null);
+final frameIdProvider = StateProvider.autoDispose<FrameID?>((ref) => null);
 
 // FrameTimestamp provider
 final frameTimestampProvider = FutureProvider<double?>((ref) async {
