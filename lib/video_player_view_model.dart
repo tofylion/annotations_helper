@@ -76,8 +76,8 @@ class VideoPlayerViewModel {
       // If the current time is greater than or equal to the timestamp, don't do anything
       final currentTime = await _controller.currentTime;
       if (currentTime >= timestamp!) {
-        if (lastState != PlayerState.unStarted) {
-          // If the video is unstarted, current time is 300. This causes a bug and the should pause turns to false
+        if (currentTime != await _controller.duration) {
+          // There's a bug where the current time is equal to the duration. This is a workaround
           shouldPause = false;
         }
       } else {
