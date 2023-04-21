@@ -1,5 +1,5 @@
 name: annotations_helper
-description: A new Flutter project.
+description: Tool to assist in the creation of Handball Annotations. Plays the last 5 seconds of a video to help you find the objects you want to annotate!
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
