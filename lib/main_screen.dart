@@ -46,7 +46,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
     super.initState();
     _controller = AnimationController(
       vsync: this, // the SingleTickerProviderStateMixin
-      duration: Duration(milliseconds: 750),
+      duration: const Duration(milliseconds: 750),
     )..addListener(() {
         setState(() {});
       });

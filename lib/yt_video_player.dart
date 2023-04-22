@@ -24,13 +24,8 @@ class _YTVideoPlayerState extends ConsumerState<YTVideoPlayer> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      widget.controller
-        ..pauseVideo()
-        ..playVideo();
-      vm = ref.read(VideoPlayerViewModel.provider)
-        ..controller = widget.controller;
-    });
+    vm = ref.read(VideoPlayerViewModel.provider)
+      ..controller = widget.controller;
   }
 
   @override
