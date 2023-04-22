@@ -1,27 +1,15 @@
-import 'dart:async';
-
 import 'package:annotations_helper/constants/app_colors.dart';
-import 'package:annotations_helper/constants/app_text_styles.dart';
 import 'package:annotations_helper/constants/dimensions.dart';
-import 'package:annotations_helper/constants/timing.dart';
 import 'package:annotations_helper/main_screen_view_model.dart';
-import 'package:annotations_helper/models/config.dart';
-import 'package:annotations_helper/models/frame_id.dart';
-import 'package:annotations_helper/services/json_utils.dart';
 import 'package:annotations_helper/widgets/input_box.dart';
 import 'package:annotations_helper/widgets/main_action_button.dart';
 import 'package:annotations_helper/widgets/my_back_button.dart';
 import 'package:annotations_helper/yt_video_player.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:googleapis/vision/v1.dart';
 import 'package:sprung/sprung.dart';
-import 'package:video_player/video_player.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
-
-import 'constants/video_ids.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -76,7 +64,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
   Widget build(BuildContext context) {
     final vmState = ref.watch(MainScreenViewModel.provider);
     final vm = ref.read(MainScreenViewModel.provider.notifier);
-    late final videoReady;
+    late final bool videoReady;
 
     switch (vmState) {
       case MainScreenStates.playingVideo:
@@ -125,7 +113,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
                                   0.25 * _curvedAnimationController.value),
                               blurRadius: 50,
                               spreadRadius: 0,
-                              offset: Offset(0, 0),
+                              offset: const Offset(0, 0),
                             ),
                           ]),
                           child: YTVideoPlayer(
@@ -137,7 +125,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
                             controller: vm.controller,
                           ),
                         )
-                      : SizedBox.shrink(),
+                      : const SizedBox.shrink(),
                 ),
                 Positioned(
                   top: _mainActionButtonMoveAnimation.value,
@@ -149,7 +137,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
                           onTap: () async {
                             await vm.updateVideo(vm.textController.text);
                           })
-                      : SizedBox.shrink(),
+                      : const SizedBox.shrink(),
                 ),
                 Positioned(
                     top: _backButtonAnimation.value,
@@ -163,10 +151,5 @@ class _MainScreenState extends ConsumerState<MainScreen>
         );
       }),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

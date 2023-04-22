@@ -27,7 +27,7 @@ class MyBackButton extends StatelessWidget {
               color: AppColors.teal.withOpacity(shadowOpacity),
               blurRadius: 4,
               spreadRadius: 0,
-              offset: Offset(0, 0),
+              offset: const Offset(0, 0),
             ),
           ],
         ),
