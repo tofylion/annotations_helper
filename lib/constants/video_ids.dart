@@ -8,5 +8,15 @@ const videoIds = {
   'ad969d_00-15-00': 'SQrTn2gmqps',
   'ad969d_00-43-00': '38hitgoLLQs',
   'ad969d_01-11-00': 'P_o90PO12Tw',
-  'ad969d_01-35-00': 'Eb6y-SnGvKE'
+  'ad969d_01-35-00': 'Eb6y-SnGvKE',
+  'e0e547_00-00-00': 'gU5IdCxgI1k',
+  'e0e547_00-08-00': 'G2dgLw9Gsw0',
+  'e0e547_00-15-00': 'mHbe2YpsN8s',
+  'e0e547_00-50-00': 'IzCrrWyhDGU',
+  'e0e547_01-00-00': 'j14fZMQRkC0',
+  'e8a35a_00-02-00': 'dS5L-4ibJf0',
+  'e8a35a_00-07-00': 'BaunHoekZYw',
+  'e8a35a_00-14-00': 'sb0wimGysUY',
+  'e8a35a_01-05-00': '7-Y-Z4kcJvo',
+  'e8a35a_01-14-00': '7kk4NRfAff4'
 };
