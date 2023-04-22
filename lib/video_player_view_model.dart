@@ -42,11 +42,7 @@ class VideoPlayerViewModel {
 
     _controllerSubscription =
         _controller.listen((event) async => await _controllerListener(event));
-    _videoStateSubscription =
-        _controller.videoStateStream.listen((event) async {
-      videoStateSubscriptionActive = true;
-      await _videoStateListener(event);
-    });
+    _initVideoStateSubscription();
   }
 
   // Private variables
@@ -76,24 +72,25 @@ class VideoPlayerViewModel {
       // If the current time is greater than or equal to the timestamp, don't do anything
       final currentTime = await _controller.currentTime;
       if (currentTime >= timestamp!) {
-        if (currentTime != await _controller.duration) {
+        if (currentTime < await _controller.duration) {
           // There's a bug where the current time is equal to the duration. This is a workaround
           shouldPause = false;
         }
       } else {
         shouldPause = true;
         videoStateEnsureTimer =
-            Timer.periodic(const Duration(seconds: 1), (timer) {
+            Timer.periodic(const Duration(seconds: 1), (timer) async {
           if (!videoStateSubscriptionActive) {
             print('restarting service');
             _videoStateSubscription?.cancel();
-            _videoStateSubscription =
-                _controller.videoStateStream.listen((event) async {
-              // print('==> listening');
-              videoStateSubscriptionActive = true;
-              _videoStateListener(event);
+            _initVideoStateSubscription();
+
+            // In case the video state subscription is still not active, we need to ensure that the video is paused at the correct frame
+            if (await _pauseVideoAtFrameStamp((currentTime * 1000).toInt())) {
               timer.cancel();
-            });
+            }
+          } else {
+            timer.cancel();
           }
         });
       }
@@ -103,14 +100,24 @@ class VideoPlayerViewModel {
     lastControllerState = event.playerState;
   }
 
-  Future<void> _videoStateListener(YoutubeVideoState event) async {
+  Future<bool> _pauseVideoAtFrameStamp(int timeInMilliseconds) async {
     final timestamp = await ref.read(frameTimestampProvider.future);
 
-    if (shouldPause && event.position.inMilliseconds >= (timestamp! * 1000)) {
+    if (shouldPause && timeInMilliseconds >= (timestamp! * 1000)) {
       pause();
       _controller.seekTo(seconds: timestamp, allowSeekAhead: true);
       shouldPause = false;
+      return true;
     }
+    return false;
+  }
+
+  void _initVideoStateSubscription() {
+    _videoStateSubscription =
+        _controller.videoStateStream.listen((event) async {
+      videoStateSubscriptionActive = true;
+      _pauseVideoAtFrameStamp(event.position.inMilliseconds);
+    });
   }
 
   // Public methods
