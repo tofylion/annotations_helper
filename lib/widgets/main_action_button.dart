@@ -27,7 +27,7 @@ class MainActionButton extends StatelessWidget {
           horizontal: Dimensions.spacingS,
         ),
         decoration: BoxDecoration(
-          color: Color(0xFF136660),
+          color: const Color(0xFF136660),
           border: Border.all(
             color: AppColors.teal,
             width: 1,
