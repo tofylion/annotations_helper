@@ -18,5 +18,10 @@ const videoIds = {
   'e8a35a_00-07-00': 'BaunHoekZYw',
   'e8a35a_00-14-00': 'sb0wimGysUY',
   'e8a35a_01-05-00': '7-Y-Z4kcJvo',
-  'e8a35a_01-14-00': '7kk4NRfAff4'
+  'e8a35a_01-14-00': '7kk4NRfAff4',
+  'ec7a6a_00-30-00': 'ta7R86C2aqI',
+  'ec7a6a_00-53-00': '-Q1mXZFole8',
+  'ec7a6a_01-19-00': 'rwHyDwB04-4',
+  'ec7a6a_01-30-00': 'lznuZ1bPlrs',
+  'ec7a6a_01-40-00': 'gcFLTwbAncE'
 };
