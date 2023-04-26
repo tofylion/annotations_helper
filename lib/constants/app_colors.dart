@@ -38,4 +38,8 @@ class AppColors {
   /// Teal - #00FFCE
   /// Used for active borders
   static const Color teal = Color(0xFF00FFCE);
+
+  /// Text grey - #9CA3AF
+  /// Used for text
+  static const Color textGrey = Color(0xFF9CA3AF);
 }

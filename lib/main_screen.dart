@@ -1,4 +1,5 @@
 import 'package:annotations_helper/constants/app_colors.dart';
+import 'package:annotations_helper/constants/app_text_styles.dart';
 import 'package:annotations_helper/constants/dimensions.dart';
 import 'package:annotations_helper/main_screen_view_model.dart';
 import 'package:annotations_helper/widgets/input_box.dart';
@@ -149,6 +150,17 @@ class _MainScreenState extends ConsumerState<MainScreen>
                     child: MyBackButton(
                       onTap: () => vm.backToInput(),
                       shadowOpacity: videoReady ? 0.25 : 0,
+                    )),
+                Positioned(
+                    bottom: 78.sp,
+                    child: Opacity(
+                      opacity: 1 - _curvedAnimationController.value,
+                      child: Center(
+                        child: Text(
+                          'Made with 🤍 by TofyLion',
+                          style: AppTextStyles.creditsTextStyle,
+                        ),
+                      ),
                     ))
               ],
             ),

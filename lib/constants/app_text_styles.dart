@@ -10,4 +10,6 @@ class AppTextStyles {
       );
   static TextStyle get backButtonTextStyle => TextStyle(
       color: AppColors.litBlack, fontSize: 25.sp, fontWeight: FontWeight.bold);
+  static TextStyle get creditsTextStyle =>
+      TextStyle(color: AppColors.textGrey, fontSize: 20.sp);
 }
