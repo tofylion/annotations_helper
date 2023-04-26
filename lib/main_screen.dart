@@ -106,16 +106,21 @@ class _MainScreenState extends ConsumerState<MainScreen>
                       ? Container(
                           width: _mainActionButtonWidthAnimation.value,
                           height: _mainActionButtonHeightAnimation.value,
-                          decoration:
-                              BoxDecoration(color: Colors.black, boxShadow: [
-                            BoxShadow(
-                              color: AppColors.teal.withOpacity(
-                                  0.25 * _curvedAnimationController.value),
-                              blurRadius: 50,
-                              spreadRadius: 0,
-                              offset: const Offset(0, 0),
-                            ),
-                          ]),
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.teal.withOpacity(
+                                    0.25 * _curvedAnimationController.value),
+                                blurRadius: 50,
+                                spreadRadius: 0,
+                                offset: const Offset(0, 0),
+                              ),
+                            ],
+                            borderRadius:
+                                BorderRadius.circular(Dimensions.radius4),
+                          ),
                           child: YTVideoPlayer(
                             width:
                                 videoExpanded ? Dimensions.videoPlayerWidth : 0,
