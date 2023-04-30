@@ -4,11 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class InputBox extends ConsumerStatefulWidget {
   const InputBox(
-      {super.key, this.onFieldSubmitted, this.controller, this.onChanged});
+      {super.key,
+      this.focusNode,
+      this.onFieldSubmitted,
+      this.controller,
+      this.onChanged});
 
   final void Function(String)? onFieldSubmitted;
   final void Function(String)? onChanged;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _InputBoxState();
@@ -22,7 +27,8 @@ class _InputBoxState extends ConsumerState<InputBox> {
   @override
   void initState() {
     super.initState();
-    focusNode = FocusNode()..addListener(() => setState(() {}));
+    focusNode = (widget.focusNode ?? FocusNode())
+      ..addListener(() => setState(() {}));
   }
 
   @override

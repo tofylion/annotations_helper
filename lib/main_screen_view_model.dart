@@ -10,13 +10,43 @@ enum MainScreenStates { waitingForInput, playingVideo }
 
 class MainScreenViewModel extends StateNotifier<MainScreenStates> {
   MainScreenViewModel({required this.ref})
-      : super(MainScreenStates.waitingForInput);
+      : super(MainScreenStates.waitingForInput) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      state = MainScreenStates.waitingForInput;
+    });
+  }
+
+  // State setter override with swtich state
+  @override
+  set state(MainScreenStates value) {
+    super.state = value;
+    switch (value) {
+      case MainScreenStates.waitingForInput:
+        mainInputFocusNode.requestFocus();
+        ref.read(videoReady.notifier).update((state) => false);
+        // Select all text for easy pasting
+        textController.selection = textController.selection
+            .copyWith(baseOffset: 0, extentOffset: textController.text.length);
+
+        break;
+      case MainScreenStates.playingVideo:
+        mainInputFocusNode.unfocus();
+        ref.read(videoReady.notifier).update((state) => true);
+        break;
+    }
+  }
 
   //Ref
   final Ref ref;
 
   // Text Controller
   final textController = TextEditingController();
+
+  // State provider for videoReady
+  final videoReady = StateProvider<bool>((ref) => false);
+
+  // Focus Node
+  FocusNode mainInputFocusNode = FocusNode();
 
   late YoutubePlayerController _controller = _initController();
 

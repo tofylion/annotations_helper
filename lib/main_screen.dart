@@ -33,39 +33,14 @@ class _MainScreenState extends ConsumerState<MainScreen>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this, // the SingleTickerProviderStateMixin
-      duration: const Duration(milliseconds: 750),
-    )..addListener(() {
-        setState(() {});
-      });
-    _curvedAnimationController = CurvedAnimation(
-        parent: _controller,
-        curve: Sprung.overDamped,
-        reverseCurve: Sprung.overDamped.flipped);
-    _inputBoxMoveAnimation =
-        Tween<double>(begin: 154.sp, end: -Dimensions.inputBoxHeight)
-            .animate(_curvedAnimationController);
-    _mainActionButtonMoveAnimation = Tween<double>(begin: 258.sp, end: 55.sp)
-        .animate(_curvedAnimationController);
-    _mainActionButtonWidthAnimation = Tween<double>(
-            begin: Dimensions.actionButtonWidth,
-            end: Dimensions.videoPlayerWidth)
-        .animate(_curvedAnimationController);
-    _mainActionButtonHeightAnimation = Tween<double>(
-            begin: Dimensions.actionButtonHeight,
-            end: Dimensions.videoPlayerHeight)
-        .animate(_curvedAnimationController);
-    _backButtonAnimation =
-        Tween<double>(begin: -Dimensions.backButtonHeight, end: 0)
-            .animate(_curvedAnimationController);
+    _initAnimations();
   }
 
   @override
   Widget build(BuildContext context) {
     final vmState = ref.watch(MainScreenViewModel.provider);
     final vm = ref.read(MainScreenViewModel.provider.notifier);
-    late final bool videoReady;
+    final videoReady = ref.watch(vm.videoReady);
 
     switch (vmState) {
       case MainScreenStates.playingVideo:
@@ -74,14 +49,10 @@ class _MainScreenState extends ConsumerState<MainScreen>
             videoExpanded = true;
           });
         });
-        videoReady = true;
-
         break;
       case MainScreenStates.waitingForInput:
         _controller.reverse();
         videoExpanded = false;
-
-        videoReady = false;
         break;
     }
 
@@ -97,6 +68,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
                 Positioned(
                   top: _inputBoxMoveAnimation.value,
                   child: InputBox(
+                      focusNode: vm.mainInputFocusNode,
                       controller: vm.textController,
                       onFieldSubmitted: (value) async =>
                           await vm.updateVideo(value)),
@@ -168,5 +140,34 @@ class _MainScreenState extends ConsumerState<MainScreen>
         );
       }),
     );
+  }
+
+  void _initAnimations() {
+    _controller = AnimationController(
+      vsync: this, // the SingleTickerProviderStateMixin
+      duration: const Duration(milliseconds: 750),
+    )..addListener(() {
+        setState(() {});
+      });
+    _curvedAnimationController = CurvedAnimation(
+        parent: _controller,
+        curve: Sprung.overDamped,
+        reverseCurve: Sprung.overDamped.flipped);
+    _inputBoxMoveAnimation =
+        Tween<double>(begin: 154.sp, end: -Dimensions.inputBoxHeight)
+            .animate(_curvedAnimationController);
+    _mainActionButtonMoveAnimation = Tween<double>(begin: 258.sp, end: 55.sp)
+        .animate(_curvedAnimationController);
+    _mainActionButtonWidthAnimation = Tween<double>(
+            begin: Dimensions.actionButtonWidth,
+            end: Dimensions.videoPlayerWidth)
+        .animate(_curvedAnimationController);
+    _mainActionButtonHeightAnimation = Tween<double>(
+            begin: Dimensions.actionButtonHeight,
+            end: Dimensions.videoPlayerHeight)
+        .animate(_curvedAnimationController);
+    _backButtonAnimation =
+        Tween<double>(begin: -Dimensions.backButtonHeight, end: 0)
+            .animate(_curvedAnimationController);
   }
 }
