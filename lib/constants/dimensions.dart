@@ -11,12 +11,15 @@ class Dimensions {
 
   static double get inputBoxWidth => 537.sp;
   static double get inputBoxHeight => 62.sp;
+  static double get inputBoxLocation => 154.sp;
 
   static double get actionButtonWidth => 211.sp;
   static double get actionButtonHeight => 45.sp;
+  static double get actionButtonLocation => 258.sp;
 
   static double get videoPlayerWidth => 1280.sp;
   static double get videoPlayerHeight => 720.sp;
+  static double get videoPlayerLocation => 55.sp;
 
   static double get backButtonHeight => 42.sp;
   static double get backButtonWidth => 149.sp;
