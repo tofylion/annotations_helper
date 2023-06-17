@@ -1,4 +1,5 @@
 import 'package:annotations_helper/constants/dimensions.dart';
+import 'package:annotations_helper/constants/timing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,7 +7,7 @@ import 'package:sprung/sprung.dart';
 
 class MainScreenAnimator extends AnimationController {
   MainScreenAnimator({required TickerProvider vsync}) : super(vsync: vsync) {
-    duration = const Duration(milliseconds: 750);
+    duration = Timing.mainTransitionDuration;
     _initAnimations();
   }
 
@@ -24,10 +25,13 @@ class MainScreenAnimator extends AnimationController {
         parent: this,
         curve: Sprung.overDamped,
         reverseCurve: Sprung.overDamped.flipped);
-    _inputBoxMoveAnimation =
-        Tween<double>(begin: 154.sp, end: -Dimensions.inputBoxHeight)
-            .animate(_curvedAnimationController);
-    _mainActionButtonMoveAnimation = Tween<double>(begin: 258.sp, end: 55.sp)
+    _inputBoxMoveAnimation = Tween<double>(
+            begin: Dimensions.inputBoxLocation,
+            end: -Dimensions.inputBoxHeight - 10.sp)
+        .animate(_curvedAnimationController);
+    _mainActionButtonMoveAnimation = Tween<double>(
+            begin: Dimensions.actionButtonLocation,
+            end: Dimensions.videoPlayerLocation)
         .animate(_curvedAnimationController);
     _mainActionButtonWidthAnimation = Tween<double>(
             begin: Dimensions.actionButtonWidth,
@@ -38,7 +42,7 @@ class MainScreenAnimator extends AnimationController {
             end: Dimensions.videoPlayerHeight)
         .animate(_curvedAnimationController);
     _backButtonAnimation =
-        Tween<double>(begin: -Dimensions.backButtonHeight, end: 0)
+        Tween<double>(begin: -Dimensions.backButtonHeight - 10.sp, end: 0)
             .animate(_curvedAnimationController);
   }
 
