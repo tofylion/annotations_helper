@@ -17,7 +17,8 @@ class MainActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
+      splashColor: Colors.transparent,
       onTap: () => onTap?.call(),
       child: Container(
         width: width,
