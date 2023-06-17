@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:annotations_helper/constants/video_properties.dart';
-import 'package:annotations_helper/main_screen_view_model.dart';
+import 'package:annotations_helper/providers/frame_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 

@@ -1,7 +1,7 @@
 import 'package:annotations_helper/constants/video_ids.dart';
 import 'package:annotations_helper/models/config.dart';
 import 'package:annotations_helper/models/frame_id.dart';
-import 'package:annotations_helper/services/json_utils.dart';
+import 'package:annotations_helper/providers/frame_providers.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
@@ -64,7 +64,7 @@ class MainScreenViewModel extends StateNotifier<MainScreenStates> {
   Future<void> updateVideo(String query) async {
     final tempFrameId = FrameID.parseFrameID(query);
     // Make sure that video name is valid
-
+    final videoIds = await ref.read(videoIdsProvider.future);
     if (videoIds[tempFrameId.videoName] == null) {
       // TODO: Show error message
       return;
@@ -72,6 +72,7 @@ class MainScreenViewModel extends StateNotifier<MainScreenStates> {
 
     ref.read(frameIdProvider.notifier).update((state) => tempFrameId);
     final videoId = videoIds[ref.read(frameIdProvider)!.videoName]!;
+
     controller.loadVideoById(
       videoId: videoId,
       startSeconds: (await ref.read(frameTimestampProvider.future))! -
@@ -95,17 +96,3 @@ class MainScreenViewModel extends StateNotifier<MainScreenStates> {
     );
   }
 }
-
-// FrameID stateProvider
-final frameIdProvider = StateProvider<FrameID?>((ref) => null);
-
-// FrameTimestamp provider
-final frameTimestampProvider = FutureProvider<double?>((ref) async {
-  final frame = ref.watch(frameIdProvider);
-  if (frame == null) {
-    return null;
-  }
-  final json = await loadJson('${frame.videoName}.json');
-
-  return json['${frame.frameNumber}'] / 1000.0; // convert to seconds
-});

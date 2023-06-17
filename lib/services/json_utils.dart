@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:path/path.dart' as path;
 
-Future<Map<String, dynamic>> loadJson(String fileName) async {
+Future<Map<String, dynamic>> loadJson(String fileName,
+    {String? assetPath}) async {
   return rootBundle
-      .loadString('assets/json/$fileName')
+      .loadString(path.join('assets/', assetPath, fileName))
       .then((jsonStr) => jsonDecode(jsonStr));
 }
