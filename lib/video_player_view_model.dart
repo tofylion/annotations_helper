@@ -123,6 +123,7 @@ class VideoPlayerViewModel {
   void dispose() {
     _controllerSubscription?.cancel();
     _videoStateSubscription?.cancel();
+    videoStateEnsureTimer?.cancel();
   }
 
   void play() {
