@@ -52,7 +52,6 @@ class _InputBoxState extends ConsumerState<InputBox> {
       child: Form(
         key: _formKey,
         child: InkWell(
-          onTap: () => null,
           onHover: (value) => setState(() {
             isHovering = value;
           }),
